@@ -1,0 +1,1 @@
+# Next.js\n.next/\nout/\n\n# dependencies\nnode_modules/\n\n# Logs\nnpm-debug.log*\nyarn-debug.log*\nyarn-error.log*\n\n# Local env files\n.env*\n\n# OS files\n.DS_Store\n
