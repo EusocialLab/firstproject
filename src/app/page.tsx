@@ -1,4 +1,12 @@
-const twinkleStars = [
+type Star = {
+  top: string;
+  left: string;
+  size: number;
+  delay: string;
+  duration: string;
+};
+
+const twinkleStars: Star[] = [
   { top: '14.56%', left: '26.67%', size: 3, delay: '0s', duration: '3.2s' },
   { top: '15.52%', left: '37.56%', size: 3, delay: '0.5s', duration: '3.6s' },
   { top: '13.82%', left: '44.68%', size: 3, delay: '1s', duration: '3.1s' },
@@ -7,7 +15,7 @@ const twinkleStars = [
   { top: '60.26%', left: '62.92%', size: 4, delay: '1.8s', duration: '3.7s' }
 ];
 
-export default function HomePage() {
+export default function HomePage(): JSX.Element {
   return (
     <main
       style={{
