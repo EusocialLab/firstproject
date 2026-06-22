@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import type { Position } from '../../types/star';
+import './LegacyCopy.css';
 
 interface LegacyCopyProps {
   position: Position;

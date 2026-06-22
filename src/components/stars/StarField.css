@@ -41,7 +41,8 @@
 }
 
 .star-button:hover,
-.star-button:focus-visible {
+.star-button:focus-visible,
+.star-button--selected {
   transform: translate(-50%, -50%) scale(1.18);
 }
 
@@ -68,7 +69,8 @@
 }
 
 .star-button:hover .star-inner,
-.star-button:focus-visible .star-inner {
+.star-button:focus-visible .star-inner,
+.star-button--selected .star-inner {
   animation-play-state: paused;
 }
 
@@ -83,4 +85,78 @@
   white-space: nowrap;
   pointer-events: none;
   z-index: 10;
+}
+
+.tooltip--story {
+  display: flex;
+  width: min(320px, calc(100vw - 32px));
+  padding: 18px 20px 16px;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(223, 201, 147, 0.28);
+  border-radius: 5px;
+  background:
+    linear-gradient(145deg, rgba(28, 31, 43, 0.97), rgba(11, 15, 27, 0.98));
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  color: #f3eee1;
+  white-space: normal;
+}
+
+.tooltip--selected {
+  pointer-events: auto;
+}
+
+.tooltip__title {
+  color: #fffaf0;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.tooltip__years {
+  margin-top: 5px;
+  color: #d5b875;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+}
+
+.tooltip__tagline {
+  margin-top: 10px;
+  color: rgba(242, 237, 224, 0.8);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.tooltip__more {
+  margin-top: 13px;
+  padding: 4px 2px 2px;
+  border: 0;
+  border-bottom: 1px solid rgba(220, 191, 121, 0.65);
+  background: transparent;
+  color: #e3c982;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.tooltip__more:hover,
+.tooltip__more:focus-visible {
+  border-color: #fff0c2;
+  color: #fff0c2;
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-inner {
+    animation: none;
+  }
 }

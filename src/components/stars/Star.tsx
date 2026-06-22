@@ -4,6 +4,7 @@ import type { LegacyStar, Position } from '../../types/star';
 interface StarProps {
   star: LegacyStar;
   mapped: Position;
+  isSelected: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   onFocus: () => void;
@@ -14,6 +15,7 @@ interface StarProps {
 export function Star({
   star,
   mapped,
+  isSelected,
   onMouseEnter,
   onMouseLeave,
   onFocus,
@@ -25,7 +27,8 @@ export function Star({
       key={star.id}
       type="button"
       aria-label={star.label}
-      className="star-button"
+      aria-pressed={isSelected}
+      className={`star-button${isSelected ? ' star-button--selected' : ''}`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onFocus={onFocus}
