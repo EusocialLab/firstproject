@@ -1,0 +1,27 @@
+.legacy-copy {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2;
+  text-align: right;
+  pointer-events: none;
+  transform: translate(-100%, -100%);
+}
+
+.legacy-copy__line--small {
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.2em;
+  color: rgba(247, 242, 217, 0.85);
+  margin: 0;
+}
+
+.legacy-copy__line--large {
+  font-size: 25px;
+  font-weight: 320;
+  letter-spacing: 0.1em;
+  color: rgba(247, 242, 217, 0.88);
+  margin: 0;
+  line-height: 0.95;
+}
