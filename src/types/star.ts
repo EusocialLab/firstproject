@@ -20,7 +20,9 @@ export type LegacyStar = {
   x: number;
   y: number;
   size: number;
+  type?: 'legacy' | 'user';
   label: string;
+  tagline?: string;
   description?: string;
   story?: LegacyStory;
   delay: string;

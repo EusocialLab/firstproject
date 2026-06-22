@@ -42,8 +42,8 @@ export function Star({
       <span
         className="star-inner"
         style={{
-          width: `${star.size * 4}px`,
-          height: `${star.size * 4}px`,
+          width: `${star.type === 'user' ? star.size : star.size * 4}px`,
+          height: `${star.type === 'user' ? star.size : star.size * 4}px`,
           animationDuration: star.duration,
           animationDelay: star.delay
         }}

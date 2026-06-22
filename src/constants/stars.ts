@@ -255,9 +255,10 @@ export const legacyStars: LegacyStar[] = [
     id: 'star-6',
     x: 1208,
     y: 650,
-    size: 3,
-    label: 'Legacy Beacon',
-    description: 'Your Legacy - Not yet written.',
+    size: 24,
+    type: 'user',
+    label: 'Your Legacy',
+    tagline: 'Not yet written',
     delay: '1.8s',
     duration: '3.7s'
   }

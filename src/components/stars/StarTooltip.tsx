@@ -36,7 +36,14 @@ export function StarTooltip({
           ) : null}
         </>
       ) : (
-        star.description ?? star.label
+        <>
+          <strong className="tooltip__title">{star.label}</strong>
+          {star.tagline ? (
+            <span className="tooltip__legacy-tagline">{star.tagline}</span>
+          ) : (
+            star.description
+          )}
+        </>
       )}
     </div>
   );
