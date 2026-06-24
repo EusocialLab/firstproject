@@ -259,6 +259,7 @@ export const legacyStars: LegacyStar[] = [
     type: 'user',
     label: 'Your Legacy',
     tagline: 'Not yet written',
+    prompt: 'click to start',
     delay: '1.8s',
     duration: '3.7s'
   }

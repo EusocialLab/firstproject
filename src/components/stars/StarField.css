@@ -74,6 +74,77 @@
   animation-play-state: paused;
 }
 
+.meteor {
+  --travel-duration: 2400ms;
+
+  position: absolute;
+  z-index: 6;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+
+.meteor__core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 20%, #dff3ff 38%, rgba(111, 193, 255, 0) 72%);
+  box-shadow:
+    0 0 5px rgba(255, 255, 255, 0.95),
+    0 0 13px rgba(132, 207, 255, 0.85),
+    0 0 24px rgba(78, 160, 255, 0.45);
+}
+
+.meteor__tail-axis {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%) rotate(var(--meteor-angle));
+  transform-origin: right center;
+}
+
+.meteor__trail {
+  position: absolute;
+  right: 0;
+  top: -1.5px;
+  width: var(--current-tail-length, 0px);
+  height: 3px;
+  transform: scaleX(0);
+  transform-origin: right center;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(116, 194, 255, 0.12) 28%,
+    rgba(205, 236, 255, 0.7) 100%
+  );
+  filter: blur(1px);
+  opacity: 0;
+  transition:
+    transform 900ms ease-out,
+    opacity 400ms ease-out;
+}
+
+.meteor--traveling .meteor__trail {
+  transform: scaleX(1);
+  opacity: 0.9;
+}
+
+.meteor--paused .meteor__trail {
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.meteor--arriving .meteor__trail {
+  transform: scaleX(0);
+  opacity: 0;
+  transition:
+    transform var(--travel-duration) linear,
+    opacity var(--travel-duration) linear;
+}
+
 .tooltip {
   position: absolute;
   transform: translateX(-50%);
@@ -105,6 +176,14 @@
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 0.72rem;
   font-style: italic;
+}
+
+.tooltip__prompt {
+  margin-top: 8px;
+  color: rgba(218, 193, 132, 0.82);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: lowercase;
 }
 
 .tooltip--story {
@@ -173,6 +252,59 @@
   border-color: #fff0c2;
   color: #fff0c2;
   outline: none;
+}
+
+.replay-button {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  z-index: 20;
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(226, 208, 164, 0.28);
+  border-radius: 50%;
+  background: rgba(12, 17, 28, 0.62);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: rgba(240, 229, 201, 0.76);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.replay-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.replay-button:hover,
+.replay-button:focus-visible {
+  transform: rotate(-18deg);
+  border-color: rgba(241, 218, 160, 0.55);
+  background: rgba(18, 25, 39, 0.82);
+  color: #fff1c9;
+  outline: none;
+}
+
+@media (max-width: 640px) {
+  .replay-button {
+    top: 20px;
+    right: 20px;
+  }
 }
 
 .legacy-login-panel {
@@ -282,5 +414,13 @@
 @media (prefers-reduced-motion: reduce) {
   .star-inner {
     animation: none;
+  }
+
+  .meteor {
+    transition: none;
+  }
+
+  .meteor__trail {
+    transition: none;
   }
 }

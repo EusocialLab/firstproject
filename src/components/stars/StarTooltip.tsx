@@ -43,6 +43,9 @@ export function StarTooltip({
           ) : (
             star.description
           )}
+          {star.prompt ? (
+            <span className="tooltip__prompt">{star.prompt}</span>
+          ) : null}
         </>
       )}
     </div>

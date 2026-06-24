@@ -23,6 +23,7 @@ export type LegacyStar = {
   type?: 'legacy' | 'user';
   label: string;
   tagline?: string;
+  prompt?: string;
   description?: string;
   story?: LegacyStory;
   delay: string;
