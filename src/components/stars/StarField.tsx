@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  type CSSProperties,
   useCallback,
   useEffect,
+  useRef,
   useMemo,
   useState,
   type PointerEvent,
@@ -23,6 +25,19 @@ interface StarFieldProps {
   onStarClick?: (star: LegacyStar) => void;
 }
 
+type BackgroundMeteor = {
+  id: string;
+  startX: number;
+  startY: number;
+  angle: number;
+  distance: number;
+  duration: number;
+  delay: number;
+  opacity: number;
+  tailLength: number;
+  thickness: number;
+};
+
 const TOUR_STAR_IDS = [
   'star-6',
   'star-5',
@@ -37,6 +52,28 @@ const TOUR_PAUSE_MS = 1800;
 const TOUR_TRAVEL_MS = 2400;
 const TAIL_COLLAPSE_MS = TOUR_TRAVEL_MS;
 const METEOR_MAX_TAIL_LENGTH = 126;
+const MAX_BACKGROUND_METEORS = 5;
+
+function randomBetween(min: number, max: number): number {
+  return min + Math.random() * (max - min);
+}
+
+function createBackgroundMeteor(): BackgroundMeteor {
+  const angle = randomBetween(18, 39);
+
+  return {
+    id: `background-meteor-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    startX: randomBetween(-8, 92),
+    startY: randomBetween(4, 62),
+    angle,
+    distance: randomBetween(120, 360),
+    duration: randomBetween(1800, 4400),
+    delay: randomBetween(0, 900),
+    opacity: randomBetween(0.16, 0.34),
+    tailLength: randomBetween(38, 105),
+    thickness: randomBetween(0.7, 1.8)
+  };
+}
 
 function easeInOut(progress: number): number {
   return 0.5 - Math.cos(Math.PI * progress) / 2;
@@ -57,7 +94,11 @@ export function StarField({ onStarClick }: StarFieldProps): ReactNode {
   const [segmentDistance, setSegmentDistance] = useState(0);
   const [isTourRunning, setIsTourRunning] = useState(true);
   const [hasTourCompleted, setHasTourCompleted] = useState(false);
+  const [activeBackgroundMeteors, setActiveBackgroundMeteors] = useState<
+    BackgroundMeteor[]
+  >([]);
   const isContainerReady = containerSize.width > 0 && containerSize.height > 0;
+  const activeBackgroundMeteorCountRef = useRef(0);
 
   const userLegacyStar = useMemo(
     () => legacyStars.find((star) => star.type === 'user') ?? null,
@@ -185,6 +226,69 @@ export function StarField({ onStarClick }: StarFieldProps): ReactNode {
 
   const closeStory = useCallback(() => setOpenedStoryId(null), []);
 
+  useEffect(() => {
+    activeBackgroundMeteorCountRef.current = activeBackgroundMeteors.length;
+  }, [activeBackgroundMeteors.length]);
+
+  useEffect(() => {
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const cleanupTimers: number[] = [];
+    let spawnTimer = 0;
+    let isCancelled = false;
+
+    const scheduleNextMeteor = () => {
+      if (isCancelled || motionQuery.matches) return;
+
+      spawnTimer = window.setTimeout(() => {
+        if (isCancelled || motionQuery.matches) return;
+
+        if (activeBackgroundMeteorCountRef.current < MAX_BACKGROUND_METEORS) {
+          const meteor = createBackgroundMeteor();
+          const lifetime = meteor.delay + meteor.duration + 450;
+
+          setActiveBackgroundMeteors((currentMeteors) => {
+            if (currentMeteors.length >= MAX_BACKGROUND_METEORS) {
+              return currentMeteors;
+            }
+
+            activeBackgroundMeteorCountRef.current = currentMeteors.length + 1;
+            return [...currentMeteors, meteor];
+          });
+
+          const cleanupTimer = window.setTimeout(() => {
+            setActiveBackgroundMeteors((currentMeteors) =>
+              currentMeteors.filter((activeMeteor) => activeMeteor.id !== meteor.id)
+            );
+          }, lifetime);
+
+          cleanupTimers.push(cleanupTimer);
+        }
+
+        scheduleNextMeteor();
+      }, randomBetween(1200, 5200));
+    };
+
+    const handleMotionPreferenceChange = () => {
+      if (motionQuery.matches) {
+        setActiveBackgroundMeteors([]);
+        window.clearTimeout(spawnTimer);
+        return;
+      }
+
+      scheduleNextMeteor();
+    };
+
+    scheduleNextMeteor();
+    motionQuery.addEventListener('change', handleMotionPreferenceChange);
+
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(spawnTimer);
+      cleanupTimers.forEach((timer) => window.clearTimeout(timer));
+      motionQuery.removeEventListener('change', handleMotionPreferenceChange);
+    };
+  }, []);
+
   const handleReplayTour = () => {
     setHasTourCompleted(false);
     setIsTourRunning(true);
@@ -308,6 +412,36 @@ export function StarField({ onStarClick }: StarFieldProps): ReactNode {
       className="star-field"
       onPointerDown={handleFieldPointerDown}
     >
+      <div className="background-meteor-layer" aria-hidden="true">
+        {activeBackgroundMeteors.map((meteor) => {
+          const travelX =
+            Math.cos((meteor.angle * Math.PI) / 180) * meteor.distance;
+          const travelY =
+            Math.sin((meteor.angle * Math.PI) / 180) * meteor.distance;
+          const meteorStyle = {
+            left: `${meteor.startX}%`,
+            top: `${meteor.startY}%`,
+            '--meteor-angle': `${meteor.angle}deg`,
+            '--meteor-distance': `${meteor.distance}px`,
+            '--meteor-duration': `${meteor.duration}ms`,
+            '--meteor-delay': `${meteor.delay}ms`,
+            '--meteor-opacity': meteor.opacity,
+            '--meteor-tail-length': `${meteor.tailLength}px`,
+            '--meteor-thickness': `${meteor.thickness}px`,
+            '--meteor-travel-x': `${travelX}px`,
+            '--meteor-travel-y': `${travelY}px`
+          } as CSSProperties;
+
+          return (
+            <span
+              key={meteor.id}
+              className="background-meteor"
+              style={meteorStyle}
+            />
+          );
+        })}
+      </div>
+
       {mappedStars.map(({ star, position }) => {
         return (
           <Star

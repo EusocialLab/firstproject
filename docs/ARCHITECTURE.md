@@ -23,7 +23,7 @@ This document focuses on implementation.
 
 ## Technical Architecture
 
-This project uses Next.js and Tailwind
+This project uses Next.js 
 
 ---
 
